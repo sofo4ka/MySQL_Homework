@@ -1,3 +1,5 @@
+-- Tестовые данные c http://filldb.info
+
 #
 # TABLE STRUCTURE FOR: comments
 #
