@@ -115,7 +115,7 @@ group by m.from_user_id order by total_msg desc limit 1;
 
 
 -- Подсчитать общее количество лайков, которые получили 10 самых молодых пользователей.
-
+-- 1 
 select 
 	concat(users.firstname, ' ', users.lastname) as username, timestampdiff(year, users.birthday, now()) as age,
 	(select p.user_id from postslikes where p.post_id = p2.id and p.likeexists = 1) user_id,
@@ -123,7 +123,32 @@ select
 from posts as p2
 join postslikes as p on p.post_id = p2.id
 join users on users.id = p2.user_id
-order by age, total_postlikes;	
+order by age, total_postlikes limit 10;	
+-- 2
+select 
+	concat(users.firstname, ' ', users.lastname) as username, timestampdiff(year, users.birthday, now()) as age,
+	(select postslikes.post_id 
+		from postslikes 
+		where postslikes.post_id = p2.id 
+			and postslikes.likeexists = 1 
+		group by postslikes.post_id) likedposts, count(*) as total_postlikes 
+from posts as p2
+join users on users.id = p2.user_id
+order by age, total_postlikes limit 10;
+-- 3
+select 
+	concat(users.firstname, ' ', users.lastname) as username,
+	timestampdiff(year, users.birthday, now()) as age,
+		(select posts.user_id from posts 
+		where postslikes.post_id = posts.id) user_id,
+		count(*) as total_postlikes
+from postslikes where postslikes.likeexists = 1
+join posts on postslikes.post_id = posts.id
+join users on users.id = posts.user_id
+order by age, total_postlikes limit 10;
+
+-- ничего так и не заработало так, как бы мне хотелось =(
+
 
 
 -- Определить кто больше поставил лайков (всего) - мужчины или женщины?
