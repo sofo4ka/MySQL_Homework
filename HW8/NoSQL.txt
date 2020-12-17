@@ -1,0 +1,49 @@
+NoSQL
+1. В базе данных Redis подберите коллекцию для подсчета посещений с определенных IP-адресов.
+
+127.0.0.1:6379> SADD ip-address '10.255.255.255.' '172.31.255.255.' '192.168.255.255.'
+(integer) 3
+127.0.0.1:6379> SADD ip-address '127.0.0.1'
+(integer) 1
+127.0.0.1:6379> SCARD ip-address
+(integer) 4
+127.0.0.1:6379> SMEMBERS ip-address
+1) "192.168.255.255."
+2) "172.31.255.255."
+3) "10.255.255.255."
+4) "127.0.0.1"
+127.0.0.1:6379> SCARD ip-address
+(integer) 4
+
+127.0.0.1:6379> SADD subscribers '10.255.255.255.' '172.31.255.255.'
+(integer) 2
+127.0.0.1:6379> SINTER ip-address subscribers
+1) "172.31.255.255."
+2) "10.255.255.255."
+127.0.0.1:6379> SISMEMBER ip-address '10.255.255.255.'
+(integer) 1
+
+
+2. При помощи базы данных Redis решите задачу поиска имени пользователя по электронному адресу и наоборот, поиск электронного адреса пользователя по его имени.
+
+127.0.0.1:6379> hset users1 'Sofya' 'sofya@mail.ru'
+(integer) 1
+127.0.0.1:6379> hget users1 'Sofya'
+"sofya@mail.ru"
+127.0.0.1:6379>  hset users2 'sofya@mail.ru' 'Sofya'
+(integer) 1
+127.0.0.1:6379>  hget users2 'sofya@mail.ru'
+"Sofya"
+
+3. Организуйте хранение категорий и товарных позиций учебной базы данных shop в СУБД MongoDB.
+
+
+use shop
+db.shop.insert({name: 'холодильник 1', category: 'Холодильники', description: 'описание 1 холодильника', price: '23457'})
+db.shop.insert({name: 'холодильник 2', category: 'Холодильники', description: 'описание 2 холодильника', price: '23359'})
+db.shop.insert({name: 'стиральная машина 6789'})
+db.shop.insert({name: 'электрический чайник красный'})
+
+
+db.shop.update({name: 'стиральная машина 6789'}, {$set: { category: 'Стиральные машины', description: 'описание стиральной машины 6789', price: '256573359' }})
+db.shop.update({name: 'электрический чайник красный'}, {$set: { category: 'Электрочайники', description: 'описание красного электрочайника', price: '9908' }})
